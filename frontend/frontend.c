@@ -420,13 +420,12 @@ INT read_periodic_event(char *levent, INT off)
     float *pdata;
     int a;
     int trig, elec, ion;
+   
     /* init bank structure */
     bk_init(levent);
+    
     /* create SCLR bank */
     bk_create(levent, "PRDC", TID_FLOAT, (void **)&pdata);
-    /* following code "simulates" some values */
-    // for (a = 0; a < 4; a++)
-    // *pdata++ = 100*sin(M_PI*time(NULL)/60+a/2.0);
     *pdata++ = 100;
 
     ptime = ts.v2495.freqmeterinttime;
@@ -434,10 +433,6 @@ INT read_periodic_event(char *levent, INT off)
     trig = v2495_GetValidEventRate(myvme, V2495_BASE_ADDR);
     elec = v2495_GetElecRate(myvme, V2495_BASE_ADDR);
     ion = v2495_GetIonRate(myvme, V2495_BASE_ADDR);
-
-    // trig = trig*rand()/100000;
-    // elec = elec*rand()/100000;
-    // ion = ion*rand()/100000;
 
     // db_set_value(hDB,0,"/Equipment/Trigger/Settings/v2495/FPGAValidEvents", &a, sizeof(a), 1 , TID_INT);
     //********************PUTTING VALUES IN ODB TREE******************************
