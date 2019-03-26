@@ -95,6 +95,32 @@ INT frontend_init()
     v2495_LateWindow(myvme, V2495_BASE_ADDR, 0x0000);
 #endif
 
+#if defined V1720_CODE
+    //check the Digitizer
+    printf("V1720\n");
+    set_equipment_status(equipment[0].name, "Setting TDC", "yellow");
+
+    // Status and Firmware version of Digitizer
+
+    printf("Status of the Digitizer::::\n");
+    v1720_Status(myvme, V1720_BASE_ADDR);
+
+    int ser_h = v1720_RegisterRead(myvme, V1720_BASE_ADDR, 0xF080);
+    int ser_l = v1720_RegisterRead(myvme, V1720_BASE_ADDR, 0xF084);
+    printf("Serial Number of Digitizer:::: 0x%x%x\n", ser_l, ser_h);
+
+    csr = mvme_read_value(myvme, V1720_BASE_ADDR, V1720_ROC_FW_VER);
+    printf("V1720 ROC(motherboard)Firmware Revision: 0x%8.8x\n", csr);
+
+    // Software reset of the Digitizer
+    v1720_Reset(myvme, V1720_BASE_ADDR);
+
+    // Setting mode 1. It sets various parameters of the device.
+    v1720_Setup(myvme, V1720_BASE_ADDR, 0x03);
+
+    printf("v1720 INITIALIZED\n");
+#endif
+
     //-----------------CODE To Initialize CFD's--------------------------------//
 #if defined V812_CODE
     // Setting Threshholds for all 16 channels of 812 model, 0 does something weird, 255 (or 0xFF) is -250ms
@@ -238,6 +264,48 @@ INT begin_of_run(INT run_number, char *error)
     mvme_set_am(myvme, MVME_AM_A32_ND);                // Setting the addressing mode to 32 Bit non privileged
     mvme_set_dmode(myvme, MVME_DMODE_D16);             // Setting the Data mode to 16 Bit
 
+#if defined V1720_CODE
+    //check the Digitizer
+    printf("V1720\n");
+    csr = mvme_read_value(myvme, V1720_BASE_ADDR, V1720_ROC_FW_VER);
+    printf("V1720 ROC(motherboard)Firmware Revision: 0x%x\n", csr);
+
+    v1720_Reset(myvme, V1720_BASE_ADDR); // Software reset of the Digitizer
+
+    v1720_Setup(myvme, V1720_BASE_ADDR, 0x03); // Setting mode 1. It sets various parameters of the device.
+
+    // Setting the buffer size to 1k
+    // v1720_RegisterWrite(myvme, V1720_BASE_ADDR, V1720_BUFFER_ORGANIZATION,  0x0A);
+
+    // Setting the threshold
+    // v1720_ChannelConfig(myvme,V1720_BASE_ADDR,0x2);
+    /*  for (i = 1; i < 9; i++)
+        {
+    //v1720_ChannelThresholdSet(myvme, V1720_BASE_ADDR, i, 0x0868);
+    //        v1720_ChannelThresholdSet(myvme, V1720_BASE_ADDR, i, 0x50);
+    }*/
+
+    v1720_ChannelDACSet(myvme,V1720_BASE_ADDR,0,0xAA00);
+    v1720_ChannelDACSet(myvme,V1720_BASE_ADDR,1,0xAA00);
+    v1720_ChannelDACSet(myvme,V1720_BASE_ADDR,2,0xAA00);
+    v1720_ChannelDACSet(myvme,V1720_BASE_ADDR,3,0xAA00);
+    v1720_ChannelDACSet(myvme,V1720_BASE_ADDR,4,0x2000);
+
+    v1720_ChannelThresholdSet(myvme,V1720_BASE_ADDR,4,0x6A4);
+    v1720_ChannelOUThresholdSet(myvme,V1720_BASE_ADDR,4,8);
+    // Individual Settings for the Run:
+    // Setting the post trigger value
+    // v1720_RegisterWrite(myvme, V1720_BASE_ADDR, V1720_POST_TRIGGER_SETTING, 80);
+    // SEtting the sample length
+    // v1720_RegisterWrite(myvme, V1720_BASE_ADDR, V1720_CUSTOM_SIZE, 200);
+
+    // v1720_RegisterWrite(myvme, V1720_BASE_ADDR, V1720_VME_CONTROL, 64);
+
+    printf("V1720 IS Configured\n");
+
+    ss_sleep(1000);
+#endif
+
 
     //******************Setting up Devices**********************************//
     int trig, elec, ion;
@@ -268,6 +336,13 @@ INT begin_of_run(INT run_number, char *error)
     CAENVME_ClearOutputRegister((int) myvme->info, cvOut0Bit);
     CAENVME_ClearOutputRegister((int) myvme->info, cvOut1Bit);
 
+    v1720_AcqCtl(myvme, V1720_BASE_ADDR, V1720_RUN_START);
+
+    csr = v1720_RegisterRead(myvme, V1720_BASE_ADDR, V1720_ACQUISITION_CONTROL);
+    printf("V1720_ACQUISITION_CONTROL::::%8.8x\n", csr);
+    printf("Begin of Run is done \n");
+
+
     return SUCCESS;
 }
 
@@ -290,7 +365,7 @@ INT end_of_run(INT run_number, char *error)
     fIsIRQEnabled = false;                                                    // used for disabling triggers
 
     CAENVME_SetOutputRegister((int) myvme->info, cvOut1Bit);
-
+    v1720_AcqCtl(myvme, V1720_BASE_ADDR, V1720_RUN_STOP);
     printf("End of Run\n");
     return SUCCESS;
 }
@@ -347,6 +422,9 @@ INT poll_event(INT source, INT count, BOOL test)
     /* ptime = ts.v2495.fpgaearlywindow; */
     /* ptime = ts.v2495.freqmeterinttime; */
     /* ptime = pd.v2495.ionfreq; */
+#if defined V1720_CODE
+    v1720_SendSoftTrigger(myvme, V1720_BASE_ADDR);
+#endif
     ss_sleep(ptime);
     return 1;
 }
@@ -379,6 +457,7 @@ INT interrupt_configure(INT cmd, INT source, POINTER_T adr)
 INT read_trigger_event(char *pevent, INT off)
 {
     DWORD *fdata, *evdata;
+    DWORD *ddata;
     DWORD drate,elec;
     bk_init32(pevent);
 
@@ -390,13 +469,77 @@ INT read_trigger_event(char *pevent, INT off)
     elec = v2495_GetElecRate(myvme, V2495_BASE_ADDR);
 
     drate =  abs(elec)-abs(pd.v2495.elecfreq);
-        *fdata++ = drate;
-        *fdata++ = ptime;
+    *fdata++ = drate;
+    *fdata++ = ptime;
     pd.v2495.elecfreq = abs(elec);
 
     printf(" Signal Rate :: %d\n", drate);
 
     bk_close(pevent, fdata);
+#endif
+
+#if defined V1720_CODE
+    v1720_AcqCtl(myvme, V1720_BASE_ADDR, V1720_RUN_STOP);
+    v1720_SetMonitorVoltageValue(myvme, V1720_BASE_ADDR, rand()%4096);
+
+    int dentry = 0;
+    int dextra = 0;
+    int devtcnt = 0;
+    int size_of_evt = 0;
+    int nu_of_evt = 0;
+    int readmsg = 0;
+    int cycle = 0,  maxcycles = 6;  // This varialble is important to read just the first event and not let ODB overflow
+
+    int bytes_totransfer = 0, bytes_remaining = 0 ;
+    int bytes_transferred =  0;
+    int bytes_max =  4096;
+
+    bk_create(pevent, "DG01", TID_DWORD, &ddata); // Create data bank for Digitizer
+
+    mvme_set_am(myvme, MVME_AM_A32_ND); //set addressing mode to A32 non-privileged data
+    mvme_set_dmode(myvme, MVME_DMODE_D32);
+    mvme_set_blt(myvme, MVME_BLT_BLT32);
+
+    int InpDat = v1720_RegisterRead(myvme, V1720_BASE_ADDR, V1720_VME_STATUS);
+    InpDat = InpDat & 0x00000001;
+
+    if (InpDat == 1)
+    {
+        size_of_evt =  mvme_read_value(myvme, V1720_BASE_ADDR, 0x814C);
+        nu_of_evt =  mvme_read_value(myvme, V1720_BASE_ADDR, 0x812C);
+        bytes_remaining = size_of_evt * nu_of_evt * 4;     //chaning from 32bit to byte
+        int toread = bytes_remaining;
+        if (bytes_remaining > 1 )
+        {
+            *ddata = (DWORD *) malloc(bytes_remaining);
+            cycle = 0;
+            int buffer_address = V1720_EVENT_READOUT_BUFFER;
+
+            while(bytes_remaining > 1 && cycle < maxcycles) 
+            {                                                  
+                if (bytes_remaining > 4096)
+                {
+                    bytes_totransfer = bytes_max;
+                }
+                else
+                    bytes_totransfer = bytes_remaining;
+
+                readmsg = CAENVME_BLTReadCycle((long *)myvme->info, V1720_BASE_ADDR + V1720_EVENT_READOUT_BUFFER , ddata, bytes_totransfer, cvA32_U_BLT, 0x04, &bytes_transferred);
+                bytes_remaining = bytes_remaining - bytes_transferred;
+                if (readmsg == 0)
+                {
+                    ddata += bytes_transferred/4;
+                }
+                if (readmsg != 0)
+                {
+                    printf("\n\n\n\nBLT REad Message::%d\n", readmsg);
+                    printf("Cycles Requ:: %d \t Cycles READ:: %d \n", bytes_totransfer, bytes_transferred);
+                }
+                cycle++;
+            }
+        }
+    }
+    bk_close(pevent, ddata);
 #endif
 
 
@@ -411,6 +554,7 @@ INT read_trigger_event(char *pevent, INT off)
     CAENVME_SetOutputRegister((int) myvme->info, cvOut0Bit);
     CAENVME_ClearOutputRegister((int) myvme->info, cvOut0Bit);
 
+    v1720_AcqCtl(myvme, V1720_BASE_ADDR, V1720_RUN_START);
     return bk_size(pevent);
 }
 
@@ -420,10 +564,10 @@ INT read_periodic_event(char *levent, INT off)
     float *pdata;
     int a;
     int trig, elec, ion;
-   
+
     /* init bank structure */
     bk_init(levent);
-    
+
     /* create SCLR bank */
     bk_create(levent, "PRDC", TID_FLOAT, (void **)&pdata);
     *pdata++ = 100;
