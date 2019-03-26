@@ -8,7 +8,7 @@
 //#define USE_L2249
 //#define USE_AGILENT
 #define USE_V1720
-#define USE_V1720_CORRELATIONS
+//#define USE_V1720_CORRELATIONS
 #define USE_MASSSELECT
 #define USE_V1290
 #define USE_TIMESTAMP

@@ -201,7 +201,7 @@ v1190B.o: $(VME_DIR)/v1190B.c
 # v262.o: $(VME_DIR)/v262.c
 # 	$(CC) $(CFLAGS) $(OSFLAGS) -Wno-unused-but-set-variable -Wno-unused-variable -o $@ -c $<
 
-v2495.o: $(VME_DIR)/v2495.c
+v2495.o: ./v2495.c
 	$(CC) $(CFLAGS) $(OSFLAGS) -Wno-unused-but-set-variable -Wno-unused-variable -o $@ -c $<
 
 v1290N.o: $(VME_DIR)/v1290N.c

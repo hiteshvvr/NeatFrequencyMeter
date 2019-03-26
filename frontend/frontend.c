@@ -35,7 +35,10 @@ unsigned int fCTSExtTrigger;
 unsigned int fCTSExtTriggerStatus;
 bool fIsIRQEnabled;
 bool IsRunStopped;
+
+// Related to Frequency Meter
 DWORD ptime = 1000;
+int maxrate = 10000;
 
 static const size_t fPacketMaxSize = 65507;
 unsigned int fPacket[65507];
@@ -418,14 +421,10 @@ INT poll_event(INT source, INT count, BOOL test)
      * equals TRUE, don't return. The test flag is used to time tht polling*/
 {
     if(IsRunStopped == true) {return 0;} 
-    /* ptime = 10; */
-    /* ptime = ts.v2495.fpgaearlywindow; */
-    /* ptime = ts.v2495.freqmeterinttime; */
-    /* ptime = pd.v2495.ionfreq; */
 #if defined V1720_CODE
     v1720_SendSoftTrigger(myvme, V1720_BASE_ADDR);
 #endif
-    ss_sleep(ptime);
+    ss_sleep(ptime);   // This line actually controls the data rate
     return 1;
 }
 
@@ -475,12 +474,13 @@ INT read_trigger_event(char *pevent, INT off)
 
     printf(" Signal Rate :: %d\n", drate);
 
+    int digrate = (drate*1000/ptime)*4096/maxrate;
     bk_close(pevent, fdata);
 #endif
 
 #if defined V1720_CODE
     v1720_AcqCtl(myvme, V1720_BASE_ADDR, V1720_RUN_STOP);
-    v1720_SetMonitorVoltageValue(myvme, V1720_BASE_ADDR, rand()%4096);
+    v1720_SetMonitorVoltageValue(myvme, V1720_BASE_ADDR, digrate);
 
     int dentry = 0;
     int dextra = 0;
@@ -573,6 +573,7 @@ INT read_periodic_event(char *levent, INT off)
     *pdata++ = 100;
 
     ptime = ts.v2495.freqmeterinttime;
+    maxrate = ts.v2495.freqmetermaxrate;
 
     trig = v2495_GetValidEventRate(myvme, V2495_BASE_ADDR);
     elec = v2495_GetElecRate(myvme, V2495_BASE_ADDR);

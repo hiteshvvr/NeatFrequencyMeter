@@ -55,11 +55,16 @@ public:
       AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1720Histograms(),"V1720 Waveforms"));
 
     if(anaManager->HaveV1720Correlations()) 
-      AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1720Correlations(),"V1720 Correlations"));
+      AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1720Correlations(),"Corr"));
     
     if(anaManager->Havemassselect()) 
         AddSingleCanvas(new TFancyHistogramCanvas(anaManager->Getmassselect(),"MassSelected"));
     AddSingleCanvas(new TComplicatedExampleCanvas());
+
+    if(anaManager->Havefreqmon()) 
+        AddSingleCanvas(new TFancyHistogramCanvas(anaManager->Getfreqmon(),"FrequencyMeter"));
+    AddSingleCanvas(new TComplicatedExampleCanvas());
+
 
     // if(anaManager->HaveV1720Ch1()) 
     //   AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1720Ch1(),"V1720 Ch1Data"));

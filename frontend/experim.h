@@ -80,6 +80,7 @@ typedef struct {
   struct {
     INT       fpgaearlywindow;
     INT       freqmeterinttime;
+    INT       freqmetermaxrate;
     INT       fpgalatewindow;
     INT       fpgavalidevents;
   } v2495;
@@ -94,6 +95,7 @@ typedef struct {
 "[v2495]",\
 "FPGAEarlyWindow = INT : 6",\
 "FReqMeterIntTime = INT : 100",\
+"FReqMeterMaxRate = INT : 10000",\
 "FPGALateWindow = INT : 22",\
 "FPGAValidEvents = INT : 16169",\
 "",\

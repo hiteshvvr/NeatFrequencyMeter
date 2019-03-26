@@ -134,9 +134,8 @@ extern "C" {
     BANK_LIST trigger_bank_list[] = {
         // online data banks
         {"DG01", TID_WORD, N_DG, NULL}, // V1720
-        {"TDC0", TID_WORD, N_TDC, NULL} // V1290N
-        ,
-            {"FPGA", TID_WORD, N_FPGA, NULL} // V1290N
+        {"TDC0", TID_WORD, N_TDC, NULL},// V1290N
+        {"FPGA", TID_WORD, N_FPGA, NULL} // V1290N
     };
 
 
