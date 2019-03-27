@@ -25,6 +25,7 @@
 #include "TV1720Correlations.h"
 #include "TV1290Histogram.h"
 #include "massselect.h"
+#include "freqmon.h"
 // #include "TV1730DppWaveform.h"
 // #include "TV1730RawWaveform.h"
 // #include "TDT724Waveform.h"
@@ -49,6 +50,7 @@ public:
 	bool HaveV1720Histograms();
   	bool HaveV1720Correlations();
         bool Havemassselect();
+        bool Havefreqmon();
         bool HaveV1720Ch1();
         bool HaveV1290Histograms();
 	// bool HaveV1730DPPistograms();
@@ -64,6 +66,7 @@ public:
 	TV1720Waveform* GetV1720Histograms();
   	TV1720Correlations* GetV1720Correlations();
         massselect* Getmassselect();
+        freqmon* Getfreqmon();
     // TV1720Ch1* GetV1720Ch1();
 	// TV1730DppWaveform* GetV1730DPPistograms();
 	// TV1730RawWaveform* GetV1730Rawistograms();
@@ -80,6 +83,7 @@ private:
 	TV1720Waveform *fV1720Waveform;
   	TV1720Correlations *fV1720Correlations;
         massselect *fmassselect;
+        freqmon *ffreqmon;
     // TV1720Ch1 *fV1720Ch1;
 
 	// TV1730DppWaveform *fV1730DppWaveform;

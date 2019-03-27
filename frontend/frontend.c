@@ -472,7 +472,7 @@ INT read_trigger_event(char *pevent, INT off)
     *fdata++ = ptime;
     pd.v2495.elecfreq = abs(elec);
 
-    printf(" Signal Rate :: %d\n", drate);
+//    printf(" Signal Rate :: %d\n", drate);
 
     int digrate = (drate*1000/ptime)*4096/maxrate;
     bk_close(pevent, fdata);

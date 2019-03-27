@@ -1,4 +1,5 @@
 #include "freqmon.h"
+#include "freqmeter.h"
 
 #include "TDirectory.h"
 #include "TV1720RawData.h"
@@ -10,9 +11,14 @@
 void freqmon::CreateHistograms() {
     clear();
 
-    TH1D *freqhist = new TH1D("ADC", "TimeStamping", 1000, 0, 5000);
-    masshist->SetXTitle("Mass in amu");
-    masshist->SetYTitle("Counts");
+    TH1D *lashist = new TH1D("LaserSignal", "LaserSiganl", 1000, 0, 1000);
+    lashist->SetXTitle("Number");
+    lashist->SetYTitle("Signal");
+    push_back(lashist);
+
+    TH1D *freqhist = new TH1D("Freqency", "Frequency", 1000, 0, 1000);
+    freqhist->SetXTitle("Number");
+    freqhist->SetYTitle("Frequency");
     push_back(freqhist);
 
     TH2D *neondim = new TH2D("neondim", "Neon Dimer", 50, 0,1, 50,0,1);
@@ -24,8 +30,8 @@ void freqmon::CreateHistograms() {
 
 void freqmon::UpdateHistograms(TDataContainer &dataContainer) {
 
-    int midasid = dataContainer.GetMidasEvent.GetSerialNumber();
-    midasid = midasid/1000;
+    int midasid = dataContainer.GetMidasEvent().GetSerialNumber();
+    midasid = midasid%1000;
 
     TV1720RawData *v1720 = dataContainer.GetEventData<TV1720RawData>("DG01");
 
@@ -42,10 +48,9 @@ void freqmon::UpdateHistograms(TDataContainer &dataContainer) {
 
         int numsam = channelDatasum.GetNSamples();
 
-        for (k = 0; k < numsam ; k++)
+        for (int k = 0; k < numsam ; k++)
             sum = sum + channelDatasum.GetADCSample(k);
         lassig = sum/numsam;
-
 
         GetHistogram(0)->SetBinContent(midasid,lassig);
     }
@@ -57,7 +62,7 @@ void freqmon::UpdateHistograms(TDataContainer &dataContainer) {
         double frequency;
         frequency = freqdata->GetFrequency();
 
-        GetHistogram(1)->SetBinContent(midasid,frequency);
+        GetHistogram(1)->SetBinContent(midasid ,frequency);
     }
 
 }

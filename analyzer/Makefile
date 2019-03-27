@@ -66,6 +66,7 @@ OBJS:=
 OBJS += TV1720Waveform.o
 OBJS += TV1720Correlations.o
 OBJS += massselect.o
+OBJS += freqmon.o
 OBJS += TV1290Histogram.o
 OBJS += TIMEStamp.o
 OBJS += freqmeter.o

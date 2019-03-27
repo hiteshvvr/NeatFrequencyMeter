@@ -72,6 +72,12 @@ TAnaManager::TAnaManager() {
   fmassselect->DisableAutoUpdate();
 #endif
 
+#ifdef USE_FREQ
+  ffreqmon = new freqmon();
+  ffreqmon->DisableAutoUpdate();
+#endif
+
+
 //  fV1730DppWaveform = 0;
 // #ifdef USE_V1730DPP
 //   fV1730DppWaveform = new TV1730DppWaveform();
@@ -105,6 +111,7 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer) {
   if (fV1720Waveform)  fV1720Waveform->UpdateHistograms(dataContainer);
   if (fV1720Correlations)  fV1720Correlations->UpdateHistograms(dataContainer);
   if (fmassselect)  fmassselect->UpdateHistograms(dataContainer);
+  if (ffreqmon)  ffreqmon->UpdateHistograms(dataContainer);
   // if(fV1730DppWaveform)  fV1730DppWaveform->UpdateHistograms(dataContainer);
   // if(fV1730RawWaveform)  fV1730RawWaveform->UpdateHistograms(dataContainer);
 
@@ -286,6 +293,10 @@ bool TAnaManager::Havemassselect() {
   if (fmassselect) return true;
   return false;
 };
+bool TAnaManager::Havefreqmon() {
+  if (ffreqmon) return true;
+  return false;
+};
 bool TAnaManager::HaveV1720Ch1() {
   if (fV1720Ch1) return true;
   return false;
@@ -312,6 +323,7 @@ TV1290Histograms* TAnaManager::GetV1290Histograms() {return fV1290Histogram;}
 TV1720Waveform* TAnaManager::GetV1720Histograms() {return fV1720Waveform;}
 TV1720Correlations* TAnaManager::GetV1720Correlations() {return fV1720Correlations;}
 massselect* TAnaManager::Getmassselect() {return fmassselect;}
+freqmon* TAnaManager::Getfreqmon() {return ffreqmon;}
 // TV1720Waveform1* TAnaManager::GetV1720Histograms(){return fV1720Ch1;}
 // TV1720Ch1* TAnaManager::GetV1720Ch1(){return fV1720Ch1;}
 // TV1730DppWaveform* TAnaManager::GetV1730DPPistograms(){return fV1730DppWaveform;}
