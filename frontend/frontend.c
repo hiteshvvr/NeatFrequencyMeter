@@ -421,9 +421,9 @@ INT poll_event(INT source, INT count, BOOL test)
      * equals TRUE, don't return. The test flag is used to time tht polling*/
 {
     if(IsRunStopped == true) {return 0;} 
-#if defined V1720_CODE
-    v1720_SendSoftTrigger(myvme, V1720_BASE_ADDR);
-#endif
+    //#if defined V1720_CODE
+    /* v1720_SendSoftTrigger(myvme, V1720_BASE_ADDR); */
+    //#endif
     ss_sleep(ptime);   // This line actually controls the data rate
     return 1;
 }
@@ -468,23 +468,26 @@ INT read_trigger_event(char *pevent, INT off)
     elec = v2495_GetElecRate(myvme, V2495_BASE_ADDR);
 
     drate =  abs(abs(elec)-abs(pd.v2495.elecfreq));
+
+    int digrate = (drate*1000/ptime)*4096/maxrate;
+    int rate = drate*1000/ptime;
     *fdata++ = drate;
     *fdata++ = ptime;
     pd.v2495.elecfreq = abs(elec);
-    if(drate<20000)
-    pd.v2495.trigfreq = drate*1000/ptime;
-    else
-    pd.v2495.trigfreq = 0;
+    if(rate<55000)
+    /* if(rate>10000) */
+    pd.v2495.trigfreq = rate;
+    /* pd.v2495.trigfreq = 0; */
+    /* else */
 
-   printf("Counts:: %d, Time:: %d, Rate:: %d \n",drate, ptime, drate*1000/ptime);
+    printf("Counts:: %d, Time:: %d, Rate:: %d \n",drate, ptime, drate*1000/ptime);
 
-    int digrate = (drate*1000/ptime)*4096/maxrate;
     bk_close(pevent, fdata);
 #endif
 
 #if defined V1720_CODE
     v1720_AcqCtl(myvme, V1720_BASE_ADDR, V1720_RUN_STOP);
-    if(drate<20000)
+    if(drate<55000)
     v1720_SetMonitorVoltageValue(myvme, V1720_BASE_ADDR, digrate);
 
     int dentry = 0;
@@ -512,6 +515,8 @@ INT read_trigger_event(char *pevent, INT off)
     {
         size_of_evt =  mvme_read_value(myvme, V1720_BASE_ADDR, 0x814C);
         nu_of_evt =  mvme_read_value(myvme, V1720_BASE_ADDR, 0x812C);
+
+        /* printf("Size of Event : %d Nu of Event: %d \n", size_of_evt, nu_of_evt); */
         bytes_remaining = size_of_evt * nu_of_evt * 4;     //chaning from 32bit to byte
         int toread = bytes_remaining;
         if (bytes_remaining > 1 )

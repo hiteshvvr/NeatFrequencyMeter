@@ -278,10 +278,6 @@ frontend.c: In function ‘end_of_run’:
 frontend.c:370:31: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
      CAENVME_SetOutputRegister((int) myvme->info, cvOut1Bit);
                                ^
-frontend.c: In function ‘poll_event’:
-frontend.c:425:5: warning: implicit declaration of function ‘v1720_SendSoftTrigger’ [-Wimplicit-function-declaration]
-     v1720_SendSoftTrigger(myvme, V1720_BASE_ADDR);
-     ^
 frontend.c: In function ‘read_trigger_event’:
 frontend.c:466:42: warning: passing argument 4 of ‘bk_create’ from incompatible pointer type [-Wincompatible-pointer-types]
      bk_create(pevent, "FPGA", TID_DWORD, &fdata);                            // Create data bank for TDC
@@ -290,56 +286,56 @@ In file included from frontend.c:15:0:
 /home/neatdaq/NewDaq/packages/midas/include/midas.h:1874:15: note: expected ‘void **’ but argument is of type ‘DWORD ** {aka unsigned int **}’
     void EXPRT bk_create(void *pbh, const char *name, WORD type, void **pdata);
                ^
-frontend.c:488:5: warning: implicit declaration of function ‘v1720_SetMonitorVoltageValue’ [-Wimplicit-function-declaration]
+frontend.c:491:5: warning: implicit declaration of function ‘v1720_SetMonitorVoltageValue’ [-Wimplicit-function-declaration]
      v1720_SetMonitorVoltageValue(myvme, V1720_BASE_ADDR, digrate);
      ^
-frontend.c:502:42: warning: passing argument 4 of ‘bk_create’ from incompatible pointer type [-Wincompatible-pointer-types]
+frontend.c:505:42: warning: passing argument 4 of ‘bk_create’ from incompatible pointer type [-Wincompatible-pointer-types]
      bk_create(pevent, "DG01", TID_DWORD, &ddata); // Create data bank for Digitizer
                                           ^
 In file included from frontend.c:15:0:
 /home/neatdaq/NewDaq/packages/midas/include/midas.h:1874:15: note: expected ‘void **’ but argument is of type ‘DWORD ** {aka unsigned int **}’
     void EXPRT bk_create(void *pbh, const char *name, WORD type, void **pdata);
                ^
-frontend.c:519:20: warning: assignment makes integer from pointer without a cast [-Wint-conversion]
+frontend.c:524:20: warning: assignment makes integer from pointer without a cast [-Wint-conversion]
              *ddata = (DWORD *) malloc(bytes_remaining);
                     ^
-frontend.c:532:48: warning: passing argument 1 of ‘CAENVME_BLTReadCycle’ makes integer from pointer without a cast [-Wint-conversion]
+frontend.c:537:48: warning: passing argument 1 of ‘CAENVME_BLTReadCycle’ makes integer from pointer without a cast [-Wint-conversion]
                  readmsg = CAENVME_BLTReadCycle((long *)myvme->info, V1720_BASE_ADDR + V1720_EVENT_READOUT_BUFFER , ddata, bytes_totransfer, cvA32_U_BLT, 0x04, &bytes_transferred);
                                                 ^
 In file included from frontend.c:26:0:
 /usr/include/CAENVMElib.h:289:1: note: expected ‘int32_t {aka int}’ but argument is of type ‘long int *’
  CAENVME_BLTReadCycle(int32_t Handle, uint32_t Address, void *Buffer,
  ^
-frontend.c:521:17: warning: unused variable ‘buffer_address’ [-Wunused-variable]
+frontend.c:526:17: warning: unused variable ‘buffer_address’ [-Wunused-variable]
              int buffer_address = V1720_EVENT_READOUT_BUFFER;
                  ^
-frontend.c:516:13: warning: unused variable ‘toread’ [-Wunused-variable]
+frontend.c:521:13: warning: unused variable ‘toread’ [-Wunused-variable]
          int toread = bytes_remaining;
              ^
-frontend.c:552:42: warning: passing argument 4 of ‘bk_create’ from incompatible pointer type [-Wincompatible-pointer-types]
+frontend.c:557:42: warning: passing argument 4 of ‘bk_create’ from incompatible pointer type [-Wincompatible-pointer-types]
      bk_create(pevent, "EVNT", TID_DWORD, &evdata);
                                           ^
 In file included from frontend.c:15:0:
 /home/neatdaq/NewDaq/packages/midas/include/midas.h:1874:15: note: expected ‘void **’ but argument is of type ‘DWORD ** {aka unsigned int **}’
     void EXPRT bk_create(void *pbh, const char *name, WORD type, void **pdata);
                ^
-frontend.c:559:31: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+frontend.c:564:31: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
      CAENVME_SetOutputRegister((int) myvme->info, cvOut0Bit);
                                ^
-frontend.c:560:33: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+frontend.c:565:33: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
      CAENVME_ClearOutputRegister((int) myvme->info, cvOut0Bit);
                                  ^
-frontend.c:492:9: warning: unused variable ‘devtcnt’ [-Wunused-variable]
+frontend.c:495:9: warning: unused variable ‘devtcnt’ [-Wunused-variable]
      int devtcnt = 0;
          ^
-frontend.c:491:9: warning: unused variable ‘dextra’ [-Wunused-variable]
+frontend.c:494:9: warning: unused variable ‘dextra’ [-Wunused-variable]
      int dextra = 0;
          ^
-frontend.c:490:9: warning: unused variable ‘dentry’ [-Wunused-variable]
+frontend.c:493:9: warning: unused variable ‘dentry’ [-Wunused-variable]
      int dentry = 0;
          ^
 frontend.c: In function ‘read_periodic_event’:
-frontend.c:570:9: warning: unused variable ‘a’ [-Wunused-variable]
+frontend.c:575:9: warning: unused variable ‘a’ [-Wunused-variable]
      int a;
          ^
 cc1: warning: command line option ‘-fpermissive’ is valid for C++/ObjC++ but not for C
