@@ -467,12 +467,16 @@ INT read_trigger_event(char *pevent, INT off)
 
     elec = v2495_GetElecRate(myvme, V2495_BASE_ADDR);
 
-    drate =  abs(elec)-abs(pd.v2495.elecfreq);
+    drate =  abs(abs(elec)-abs(pd.v2495.elecfreq));
     *fdata++ = drate;
     *fdata++ = ptime;
     pd.v2495.elecfreq = abs(elec);
+    if(drate<20000)
+    pd.v2495.trigfreq = drate*1000/ptime;
+    else
+    pd.v2495.trigfreq = 0;
 
-//    printf(" Signal Rate :: %d\n", drate);
+   printf("Counts:: %d, Time:: %d, Rate:: %d \n",drate, ptime, drate*1000/ptime);
 
     int digrate = (drate*1000/ptime)*4096/maxrate;
     bk_close(pevent, fdata);
@@ -480,6 +484,7 @@ INT read_trigger_event(char *pevent, INT off)
 
 #if defined V1720_CODE
     v1720_AcqCtl(myvme, V1720_BASE_ADDR, V1720_RUN_STOP);
+    if(drate<20000)
     v1720_SetMonitorVoltageValue(myvme, V1720_BASE_ADDR, digrate);
 
     int dentry = 0;

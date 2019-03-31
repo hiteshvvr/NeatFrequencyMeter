@@ -7,18 +7,18 @@
     <script src="controls.js"></script>
     <script src="midas.js"></script>
     <script src="mhttpd.js"></script>
-    <title>Example</title>
+    <title>FrequencyMeter</title>
 </head>
 <meta http-equiv="refresh" content="200">
 
-<body class="mcss" onload="mhttpd_init('Test');">
+<body class="mcss" onload="mhttpd_init('FrequencyMeter');">
     <!-- header and side navigation will be filled in mhttpd_start -->
     <div id="mheader"></div>
     <div id="msidenav"></div>
     <div id="mmain">
         <table class="mtable" width="800">
             <tr>
-                <th colspan="3" class="mtableheader">FPGA</th>
+                <th colspan="3" class="mtableheader">Frequency Meter</th>
             </tr>
             <tr>
                 <td style="width: 200px;">
@@ -56,16 +56,10 @@
             </tr>
             <tr>
                 <td>
-                    Mass Spectrum<br>from FPGA:
+                    Trigger Frequency:<br>from FPGA:
                 </td>
                 <td>
-                    <div name="modbvbar" style="width:10px;height:100px;" data-odb-path="/Equipment/Periodic/Display/v2495/TrigFreq" data-min-value 4" data-max-value="20000" data-color="lightgreen"></div>
-                    <div name="modbvbar" style="width:10px;height:100px;" data-odb-path="/Runinfo/Run number" data-max-value="10" data-color="red"></div>
-                    <div name="modbvbar" style="width:10px;height:100px;" data-odb-path="/Runinfo/Run number" data-max-value="10" data-color="red"></div>
-                    <div name="modbvbar" style="width:10px;height:100px;" data-odb-path="/Runinfo/Run number" data-max-value="10" data-color="red"></div>
-                    <div name="modbvbar" style="width:10px;height:100px;" data-odb-path="/Runinfo/Run number" data-max-value="10" data-color="red"></div>
-                    <div name="modbvbar" style="width:10px;height:100px;" data-odb-path="/Runinfo/Run number" data-max-value="10" data-color="red"></div>
-                    <div name="modbvbar" style="width:10px;height:100px;" data-odb-path="/Runinfo/Run number" data-max-value="10" data-color="red"></div>
+<div name="modbhbar" style="width: 500px; height: 18px;" data-odb-path="/Equipment/Periodic/Display/v2495/TrigFreq" data-max-value="30000" data-color="lightgreen" data-scale="1" data-value="1" ></div>
                 </td>
             </tr>
             <tr>
@@ -89,8 +83,9 @@
                 </td>
             </tr>
         </table>
-        <!-- Settings for TDC -->
-        <table class="mtable" width="800">
+        <!-- 
+        <!-- Settings for TDC  
+            <table class="mtable" width="800">
             <tr>
                 <th colspan="2" class="mtableheader">TDC(These numbers are taken at the begining of Run)</th>
             </tr>
@@ -105,7 +100,7 @@
             <tr>
                 <td>
                     <font color="darkyellow">OFFSet(ns)</font>
-                    <!-- FPGA Early Time: -->
+                    <!-- FPGA Early Time: 
                 </td>
                 <td>
                     <div name="modbvalue" data-odb-path="/Equipment/Trigger/Settings/v1290/TDCOffset" data-odb-editable="1"></div>
@@ -114,14 +109,14 @@
             <tr>
                 <td>
                     <font color="darkyellow">Width(ns)</font>
-                    <!-- FPGA Early Time: -->
+                    <!-- FPGA Early Time: 
                 </td>
                 <td>
                     <div name="modbvalue" data-odb-path="/Equipment/Trigger/Settings/v1290/TDCWidth" data-odb-editable="1"></div>
                 </td>
             </tr>
             </tr>
-        </table>
+        </table> -->
     </div>
 </body>
 
