@@ -3,7 +3,7 @@
  * Name: frontend.c
  * Contents: Frontend for the Frequency Meter using CAEN FPGA V2495
  *
- * $Id: frontend.c 0001 25-10-19    hitesh.rahangdale@mail.huji.ac.il
+ * $Id: frontend.c 0001 25-02-19    hitesh.rahangdale@mail.huji.ac.il
  *
  * ******************************************************************************************/
 
@@ -39,6 +39,8 @@ bool IsRunStopped;
 // Related to Frequency Meter
 DWORD ptime = 1000;
 int maxrate = 10000;
+int tptime = 100;
+int tenum = 1000;
 
 static const size_t fPacketMaxSize = 65507;
 unsigned int fPacket[65507];
@@ -467,29 +469,30 @@ INT read_trigger_event(char *pevent, INT off)
 
     elec = v2495_GetElecRate(myvme, V2495_BASE_ADDR);
 
-    drate =  abs(abs(elec)-abs(pd.v2495.elecfreq));
+    /* drate =  abs(abs(elec)-abs(pd.v2495.elecfreq)); */
+    drate = abs(abs(elec)-tenum);
+    tenum = abs(elec);
 
     int digrate = (drate*1000/ptime)*4096/maxrate;
     int rate = drate*1000/ptime;
+
     *fdata++ = drate;
     *fdata++ = ptime;
     pd.v2495.elecfreq = abs(elec);
-    if(rate<55000)
-    /* if(rate>10000) */
-    pd.v2495.trigfreq = rate;
-    /* pd.v2495.trigfreq = 0; */
-    /* else */
 
-    printf("Counts:: %d, Time:: %d, Rate:: %d \n",drate, ptime, drate*1000/ptime);
+    if(rate<50000)
+    {
+        pd.v2495.trigfreq = rate;
+        v1720_SetMonitorVoltageValue(myvme, V1720_BASE_ADDR, digrate);
+    }
+    printf("Counts:: %d, Time:: %d, Rate:: %d \n",drate, ptime, rate);
 
     bk_close(pevent, fdata);
 #endif
 
 #if defined V1720_CODE
     v1720_AcqCtl(myvme, V1720_BASE_ADDR, V1720_RUN_STOP);
-    if(drate<55000)
-    v1720_SetMonitorVoltageValue(myvme, V1720_BASE_ADDR, digrate);
-
+    
     int dentry = 0;
     int dextra = 0;
     int devtcnt = 0;
