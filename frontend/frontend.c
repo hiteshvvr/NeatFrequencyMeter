@@ -428,9 +428,13 @@ INT poll_event(INT source, INT count, BOOL test)
     /* v1720_SendSoftTrigger(myvme, V1720_BASE_ADDR); */
     //#endif
     /* ss_sleep(ptime);   // This line actually controls the data rate */
-    usleep(ptime);
-
-    return 1;
+    //    usleep(ptime);
+    int InpDat = v1720_RegisterRead(myvme, V1720_BASE_ADDR, V1720_VME_STATUS);
+    InpDat = InpDat & 0x00000001;
+    if(InpDat == 1)
+        return 1;
+    else 
+        return 0;
 }
 
 
@@ -483,15 +487,15 @@ INT read_trigger_event(char *pevent, INT off)
     int datratesmax = 10;
     int avgr = 0;
 
-/*    for(int mm = 0; mm<datratesmax-1; mm++)
-    {
-        datrates[mm] = datrates[mm+1];
-        avgr = avgr + datrates[mm];
-    }
-    datrates[9] = rate;
-    avgr = avgr + datrates[9];
-*/
-/* int flo_rate = avgr/datratesmax; */
+    /*    for(int mm = 0; mm<datratesmax-1; mm++)
+          {
+          datrates[mm] = datrates[mm+1];
+          avgr = avgr + datrates[mm];
+          }
+          datrates[9] = rate;
+          avgr = avgr + datrates[9];
+          */
+    /* int flo_rate = avgr/datratesmax; */
 
     pd.v2495.elecfreq = abs(elec);
 
@@ -499,7 +503,7 @@ INT read_trigger_event(char *pevent, INT off)
     {
         pd.v2495.trigfreq = rate;
     }
-    
+
     if(drate<50000)
     {
         *fdata++ = drate;
@@ -509,18 +513,18 @@ INT read_trigger_event(char *pevent, INT off)
 
     /* printf("Counts:: %d, Time:: %d, Rate:: %d, AvgRate:: %d \n",drate, ptime, rate, flo_rate); */
     printf("Time:: %d, Event: %d,  Rate:: %d, \n",ptime, drate , rate);
-    
+
     int digrate = (drate*tbase/ptime)*4096/maxrate;
     /* int digrate = (flo_rate*tbase/ptime)*4096/maxrate; */
     if(digrate<4096)
-    v1720_SetMonitorVoltageValue(myvme, V1720_BASE_ADDR, digrate);
+        v1720_SetMonitorVoltageValue(myvme, V1720_BASE_ADDR, digrate);
 
     bk_close(pevent, fdata);
 #endif
 
 #if defined V1720_CODE
     v1720_AcqCtl(myvme, V1720_BASE_ADDR, V1720_RUN_STOP);
-    
+
     int dentry = 0;
     int dextra = 0;
     int devtcnt = 0;
@@ -547,7 +551,7 @@ INT read_trigger_event(char *pevent, INT off)
         size_of_evt =  mvme_read_value(myvme, V1720_BASE_ADDR, 0x814C);
         nu_of_evt =  mvme_read_value(myvme, V1720_BASE_ADDR, 0x812C);
 
-        /* printf("Size of Event : %d Nu of Event: %d \n", size_of_evt, nu_of_evt); */
+        printf("Size of Event : %d Nu of Event: %d \n", size_of_evt, nu_of_evt);
         bytes_remaining = size_of_evt * nu_of_evt * 4;     //chaning from 32bit to byte
         int toread = bytes_remaining;
         if (bytes_remaining > 1 )
