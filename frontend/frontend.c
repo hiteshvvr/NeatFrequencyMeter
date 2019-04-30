@@ -41,6 +41,7 @@ DWORD ptime = 1000;
 int maxrate = 10000;
 int tptime = 100;
 int tenum = 1000;
+int datrates[10] = {0,0,0,0,0,0,0,0,0,0};
 
 static const size_t fPacketMaxSize = 65507;
 unsigned int fPacket[65507];
@@ -426,7 +427,9 @@ INT poll_event(INT source, INT count, BOOL test)
     //#if defined V1720_CODE
     /* v1720_SendSoftTrigger(myvme, V1720_BASE_ADDR); */
     //#endif
-    ss_sleep(ptime);   // This line actually controls the data rate
+    /* ss_sleep(ptime);   // This line actually controls the data rate */
+    usleep(ptime);
+
     return 1;
 }
 
@@ -461,6 +464,8 @@ INT read_trigger_event(char *pevent, INT off)
     DWORD *ddata;
     DWORD drate,elec;
     bk_init32(pevent);
+    /* int tbase = 1000000; // for Microseconds sleep */
+    int tbase = 1000; // for milliseconds sleep
 
     //-----------------Take Data of TDC'S----------------------------------//
 #if defined V2495_CODE
@@ -473,19 +478,42 @@ INT read_trigger_event(char *pevent, INT off)
     drate = abs(abs(elec)-tenum);
     tenum = abs(elec);
 
-    int digrate = (drate*1000/ptime)*4096/maxrate;
-    int rate = drate*1000/ptime;
+    int rate = drate*tbase/ptime;
 
-    *fdata++ = drate;
-    *fdata++ = ptime;
+    int datratesmax = 10;
+    int avgr = 0;
+
+/*    for(int mm = 0; mm<datratesmax-1; mm++)
+    {
+        datrates[mm] = datrates[mm+1];
+        avgr = avgr + datrates[mm];
+    }
+    datrates[9] = rate;
+    avgr = avgr + datrates[9];
+*/
+/* int flo_rate = avgr/datratesmax; */
+
     pd.v2495.elecfreq = abs(elec);
 
-    if(rate<50000)
+    if(drate<50000)
     {
         pd.v2495.trigfreq = rate;
-        v1720_SetMonitorVoltageValue(myvme, V1720_BASE_ADDR, digrate);
     }
-    printf("Counts:: %d, Time:: %d, Rate:: %d \n",drate, ptime, rate);
+    
+    if(drate<50000)
+    {
+        *fdata++ = drate;
+        *fdata++ = ptime;     // TIME SHOULD BE IN MICROSECONDS IF USED IN ROOTANA
+        *fdata++ = rate;
+    }
+
+    /* printf("Counts:: %d, Time:: %d, Rate:: %d, AvgRate:: %d \n",drate, ptime, rate, flo_rate); */
+    printf("Time:: %d, Event: %d,  Rate:: %d, \n",ptime, drate , rate);
+    
+    int digrate = (drate*tbase/ptime)*4096/maxrate;
+    /* int digrate = (flo_rate*tbase/ptime)*4096/maxrate; */
+    if(digrate<4096)
+    v1720_SetMonitorVoltageValue(myvme, V1720_BASE_ADDR, digrate);
 
     bk_close(pevent, fdata);
 #endif

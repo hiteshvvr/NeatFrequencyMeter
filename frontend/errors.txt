@@ -195,147 +195,153 @@ gcc -g -O2 -Wall -fpermissive -g -I/home/neatdaq/NewDaq/packages/midas/include -
 -lm -lz -lutil -lnsl -lpthread -lrt -l CAENVME #libpvic.a
 cc1: warning: command line option ‘-fpermissive’ is valid for C++/ObjC++ but not for C
 frontend.c: In function ‘frontend_init’:
-frontend.c:72:25: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+frontend.c:73:25: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
      CAENVME_DeviceReset((int) myvme->info);
                          ^
-frontend.c:74:27: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+frontend.c:75:27: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
      CAENVME_SetOutputConf((int) myvme->info, cvOutput0, cvDirect, cvDirect, cvManualSW);
                            ^
-frontend.c:75:27: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+frontend.c:76:27: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
      CAENVME_SetOutputConf((int) myvme->info, cvOutput1, cvDirect, cvDirect, cvManualSW);
                            ^
-frontend.c:77:31: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+frontend.c:78:31: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
      CAENVME_SetOutputRegister((int) myvme->info, cvOut1Bit);// Although using it now its used End of transmission
                                ^
-frontend.c:79:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+frontend.c:80:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
      CAENVME_SetInputConf((int) myvme->info, cvInput0, cvDirect, cvDirect);
                           ^
-frontend.c:82:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+frontend.c:83:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
      CAENVME_ReadRegister((int) myvme->info, 0x0B, &InpDat);
                           ^
-frontend.c:85:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+frontend.c:86:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
      CAENVME_ReadRegister((int) myvme->info, cvInputReg, &InpDat);
                           ^
-frontend.c:111:5: warning: implicit declaration of function ‘v1720_Status’ [-Wimplicit-function-declaration]
+frontend.c:112:5: warning: implicit declaration of function ‘v1720_Status’ [-Wimplicit-function-declaration]
      v1720_Status(myvme, V1720_BASE_ADDR);
      ^
-frontend.c:113:17: warning: implicit declaration of function ‘v1720_RegisterRead’ [-Wimplicit-function-declaration]
+frontend.c:114:17: warning: implicit declaration of function ‘v1720_RegisterRead’ [-Wimplicit-function-declaration]
      int ser_h = v1720_RegisterRead(myvme, V1720_BASE_ADDR, 0xF080);
                  ^
-frontend.c:121:5: warning: implicit declaration of function ‘v1720_Reset’ [-Wimplicit-function-declaration]
+frontend.c:122:5: warning: implicit declaration of function ‘v1720_Reset’ [-Wimplicit-function-declaration]
      v1720_Reset(myvme, V1720_BASE_ADDR);
      ^
-frontend.c:124:5: warning: implicit declaration of function ‘v1720_Setup’ [-Wimplicit-function-declaration]
+frontend.c:125:5: warning: implicit declaration of function ‘v1720_Setup’ [-Wimplicit-function-declaration]
      v1720_Setup(myvme, V1720_BASE_ADDR, 0x03);
      ^
-frontend.c:155:9: warning: unused variable ‘gemlatch’ [-Wunused-variable]
+frontend.c:156:9: warning: unused variable ‘gemlatch’ [-Wunused-variable]
      int gemlatch = 9; // I do not understand the use of this function
          ^
-frontend.c:67:9: warning: unused variable ‘i’ [-Wunused-variable]
+frontend.c:68:9: warning: unused variable ‘i’ [-Wunused-variable]
      int i, status, csr;
          ^
 frontend.c: In function ‘begin_of_run’:
-frontend.c:293:5: warning: implicit declaration of function ‘v1720_ChannelDACSet’ [-Wimplicit-function-declaration]
+frontend.c:294:5: warning: implicit declaration of function ‘v1720_ChannelDACSet’ [-Wimplicit-function-declaration]
      v1720_ChannelDACSet(myvme,V1720_BASE_ADDR,0,0xAA00);
      ^
-frontend.c:299:5: warning: implicit declaration of function ‘v1720_ChannelThresholdSet’ [-Wimplicit-function-declaration]
+frontend.c:300:5: warning: implicit declaration of function ‘v1720_ChannelThresholdSet’ [-Wimplicit-function-declaration]
      v1720_ChannelThresholdSet(myvme,V1720_BASE_ADDR,4,0x6A4);
      ^
-frontend.c:300:5: warning: implicit declaration of function ‘v1720_ChannelOUThresholdSet’ [-Wimplicit-function-declaration]
+frontend.c:301:5: warning: implicit declaration of function ‘v1720_ChannelOUThresholdSet’ [-Wimplicit-function-declaration]
      v1720_ChannelOUThresholdSet(myvme,V1720_BASE_ADDR,4,8);
      ^
-frontend.c:340:31: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+frontend.c:341:31: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
      CAENVME_SetOutputRegister((int) myvme->info, cvOut0Bit);
                                ^
-frontend.c:341:33: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+frontend.c:342:33: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
      CAENVME_ClearOutputRegister((int) myvme->info, cvOut0Bit);
                                  ^
-frontend.c:342:33: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+frontend.c:343:33: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
      CAENVME_ClearOutputRegister((int) myvme->info, cvOut1Bit);
                                  ^
-frontend.c:344:5: warning: implicit declaration of function ‘v1720_AcqCtl’ [-Wimplicit-function-declaration]
+frontend.c:345:5: warning: implicit declaration of function ‘v1720_AcqCtl’ [-Wimplicit-function-declaration]
      v1720_AcqCtl(myvme, V1720_BASE_ADDR, V1720_RUN_START);
      ^
-frontend.c:267:10: warning: unused variable ‘threshold’ [-Wunused-variable]
+frontend.c:268:10: warning: unused variable ‘threshold’ [-Wunused-variable]
      WORD threshold[32];
           ^
-frontend.c:266:33: warning: unused variable ‘temp’ [-Wunused-variable]
+frontend.c:267:33: warning: unused variable ‘temp’ [-Wunused-variable]
      int i, csr, status, evtcnt, temp;
                                  ^
-frontend.c:266:25: warning: unused variable ‘evtcnt’ [-Wunused-variable]
+frontend.c:267:25: warning: unused variable ‘evtcnt’ [-Wunused-variable]
      int i, csr, status, evtcnt, temp;
                          ^
-frontend.c:266:17: warning: unused variable ‘status’ [-Wunused-variable]
+frontend.c:267:17: warning: unused variable ‘status’ [-Wunused-variable]
      int i, csr, status, evtcnt, temp;
                  ^
-frontend.c:260:17: warning: unused variable ‘size’ [-Wunused-variable]
+frontend.c:261:17: warning: unused variable ‘size’ [-Wunused-variable]
      INT Status, size;
                  ^
-frontend.c:260:9: warning: variable ‘Status’ set but not used [-Wunused-but-set-variable]
+frontend.c:261:9: warning: variable ‘Status’ set but not used [-Wunused-but-set-variable]
      INT Status, size;
          ^
 frontend.c: In function ‘end_of_run’:
-frontend.c:372:31: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+frontend.c:373:31: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
      CAENVME_SetOutputRegister((int) myvme->info, cvOut1Bit);
                                ^
 frontend.c: In function ‘read_trigger_event’:
-frontend.c:468:42: warning: passing argument 4 of ‘bk_create’ from incompatible pointer type [-Wincompatible-pointer-types]
+frontend.c:473:42: warning: passing argument 4 of ‘bk_create’ from incompatible pointer type [-Wincompatible-pointer-types]
      bk_create(pevent, "FPGA", TID_DWORD, &fdata);                            // Create data bank for TDC
                                           ^
 In file included from frontend.c:15:0:
 /home/neatdaq/NewDaq/packages/midas/include/midas.h:1874:15: note: expected ‘void **’ but argument is of type ‘DWORD ** {aka unsigned int **}’
     void EXPRT bk_create(void *pbh, const char *name, WORD type, void **pdata);
                ^
-frontend.c:486:9: warning: implicit declaration of function ‘v1720_SetMonitorVoltageValue’ [-Wimplicit-function-declaration]
-         v1720_SetMonitorVoltageValue(myvme, V1720_BASE_ADDR, digrate);
-         ^
-frontend.c:508:42: warning: passing argument 4 of ‘bk_create’ from incompatible pointer type [-Wincompatible-pointer-types]
+frontend.c:510:5: warning: implicit declaration of function ‘v1720_SetMonitorVoltageValue’ [-Wimplicit-function-declaration]
+     v1720_SetMonitorVoltageValue(myvme, V1720_BASE_ADDR, digrate);
+     ^
+frontend.c:530:42: warning: passing argument 4 of ‘bk_create’ from incompatible pointer type [-Wincompatible-pointer-types]
      bk_create(pevent, "DG01", TID_DWORD, &ddata); // Create data bank for Digitizer
                                           ^
 In file included from frontend.c:15:0:
 /home/neatdaq/NewDaq/packages/midas/include/midas.h:1874:15: note: expected ‘void **’ but argument is of type ‘DWORD ** {aka unsigned int **}’
     void EXPRT bk_create(void *pbh, const char *name, WORD type, void **pdata);
                ^
-frontend.c:527:20: warning: assignment makes integer from pointer without a cast [-Wint-conversion]
+frontend.c:549:20: warning: assignment makes integer from pointer without a cast [-Wint-conversion]
              *ddata = (DWORD *) malloc(bytes_remaining);
                     ^
-frontend.c:540:48: warning: passing argument 1 of ‘CAENVME_BLTReadCycle’ makes integer from pointer without a cast [-Wint-conversion]
+frontend.c:562:48: warning: passing argument 1 of ‘CAENVME_BLTReadCycle’ makes integer from pointer without a cast [-Wint-conversion]
                  readmsg = CAENVME_BLTReadCycle((long *)myvme->info, V1720_BASE_ADDR + V1720_EVENT_READOUT_BUFFER , ddata, bytes_totransfer, cvA32_U_BLT, 0x04, &bytes_transferred);
                                                 ^
 In file included from frontend.c:26:0:
 /usr/include/CAENVMElib.h:289:1: note: expected ‘int32_t {aka int}’ but argument is of type ‘long int *’
  CAENVME_BLTReadCycle(int32_t Handle, uint32_t Address, void *Buffer,
  ^
-frontend.c:529:17: warning: unused variable ‘buffer_address’ [-Wunused-variable]
+frontend.c:551:17: warning: unused variable ‘buffer_address’ [-Wunused-variable]
              int buffer_address = V1720_EVENT_READOUT_BUFFER;
                  ^
-frontend.c:524:13: warning: unused variable ‘toread’ [-Wunused-variable]
+frontend.c:546:13: warning: unused variable ‘toread’ [-Wunused-variable]
          int toread = bytes_remaining;
              ^
-frontend.c:560:42: warning: passing argument 4 of ‘bk_create’ from incompatible pointer type [-Wincompatible-pointer-types]
+frontend.c:582:42: warning: passing argument 4 of ‘bk_create’ from incompatible pointer type [-Wincompatible-pointer-types]
      bk_create(pevent, "EVNT", TID_DWORD, &evdata);
                                           ^
 In file included from frontend.c:15:0:
 /home/neatdaq/NewDaq/packages/midas/include/midas.h:1874:15: note: expected ‘void **’ but argument is of type ‘DWORD ** {aka unsigned int **}’
     void EXPRT bk_create(void *pbh, const char *name, WORD type, void **pdata);
                ^
-frontend.c:567:31: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+frontend.c:589:31: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
      CAENVME_SetOutputRegister((int) myvme->info, cvOut0Bit);
                                ^
-frontend.c:568:33: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+frontend.c:590:33: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
      CAENVME_ClearOutputRegister((int) myvme->info, cvOut0Bit);
                                  ^
-frontend.c:498:9: warning: unused variable ‘devtcnt’ [-Wunused-variable]
+frontend.c:520:9: warning: unused variable ‘devtcnt’ [-Wunused-variable]
      int devtcnt = 0;
          ^
-frontend.c:497:9: warning: unused variable ‘dextra’ [-Wunused-variable]
+frontend.c:519:9: warning: unused variable ‘dextra’ [-Wunused-variable]
      int dextra = 0;
          ^
-frontend.c:496:9: warning: unused variable ‘dentry’ [-Wunused-variable]
+frontend.c:518:9: warning: unused variable ‘dentry’ [-Wunused-variable]
      int dentry = 0;
          ^
+frontend.c:484:9: warning: unused variable ‘avgr’ [-Wunused-variable]
+     int avgr = 0;
+         ^
+frontend.c:483:9: warning: unused variable ‘datratesmax’ [-Wunused-variable]
+     int datratesmax = 10;
+         ^
 frontend.c: In function ‘read_periodic_event’:
-frontend.c:578:9: warning: unused variable ‘a’ [-Wunused-variable]
+frontend.c:600:9: warning: unused variable ‘a’ [-Wunused-variable]
      int a;
          ^
 cc1: warning: command line option ‘-fpermissive’ is valid for C++/ObjC++ but not for C

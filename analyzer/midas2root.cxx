@@ -307,8 +307,8 @@ class Analyzer : public TRootanaEventLoop
             // int i,k;
             int i, numsamples, j;
             //        if(getrawdata == 1)
-            // outfile << "!!!" << "\n" << psevent.midasid << "\n";
-            outfile << dataContainer.GetMidasData().GetTimeStamp() << ", ";
+            //outfile << "!!!" << "\n" << psevent.midasid << "\n";
+            //outfile << dataContainer.GetMidasData().GetTimeStamp() << ", ";
 
 #ifdef USE_FREQ
 
@@ -319,10 +319,11 @@ class Analyzer : public TRootanaEventLoop
                 double frequency;
                 frequency = freqdata->GetFrequency();
                 std::cout.precision(10);
-                outfile << std::fixed << frequency << "\n ";
-                std::cout << freqdata->GetFrequency()<< "\t" << freqdata->GetIntCount() << "\t";
-                std::cout << freqdata->GetIntTime();
-                std::cout << std::endl;
+                // outfile << std::fixed << frequency << "\t ";
+                outfile << frequency << "\t";
+                // std::cout << freqdata->GetFrequency()<< "\t" << freqdata->GetIntCount() << "\t";
+                // std::cout << freqdata->GetIntTime();
+                // std::cout << std::endl;
             }
 #endif
 
@@ -354,12 +355,13 @@ class Analyzer : public TRootanaEventLoop
                 }
 
                 TV1720RawChannel channel0data = v1720->GetChannelData(0);
-                numsam = channelDatasum.GetNSamples();
+                numsam = channel0data.GetNSamples();
                 int adc0 = 0;
                 for (k = 0; k < numsam ; k++)
                     adc0 =  adc0 + channel0data.GetADCSample(k);
+                if(numsam != 0)
                 adc0 = adc0/numsam;
-                // outfile <<adc0<< ", ";
+                outfile <<adc0<< "\n ";
 
 
                 if(windowmin < smaxpos && smaxpos < windowmax)
@@ -475,11 +477,13 @@ class Analyzer : public TRootanaEventLoop
                 complete->Fill(psevent.posx, psevent.posy);
                 focused->Fill(psevent.posx, psevent.posy);
 
-                if (getrawdata == 1)
-                    outfile <<smaxpos<< ", "<<adc0<<", ";
+                if (getrawdata == 1987)
+                {
+                outfile <<smaxpos<< ", "<<adc0<<", ";
                 outfile <<maxch[0]<<", ";
                 outfile <<maxch[1]<<", "<<maxch[2]<<", "<<maxch[3]<<", ";
                 outfile <<psevent.posx<<", "<<psevent.posy << "\n";
+                }
 
                 //f1720Tree->Fill();
             }
@@ -533,7 +537,7 @@ class Analyzer : public TRootanaEventLoop
                     if (channo == 1)
                         event.chan1Data = chandata;
 
-                    if (getrawdata == 1)
+                    if (getrawdata == 10)
                         outfile << channo << ", " << chandata << "\n";
 
                     event.tdiff = event.chan1Data - event.chan0Data;
