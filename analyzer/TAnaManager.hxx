@@ -13,6 +13,7 @@
 #define USE_V1290
 #define USE_TIMESTAMP
 #define USE_FREQ
+// #define USE_NEATEVT
 //#define USE_V1730DPP
 // #define USE_V1730RAW
 // #define USE_DT724

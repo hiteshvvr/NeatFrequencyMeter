@@ -42,8 +42,8 @@ public:
     // if(anaManager->HaveV792Histograms()) 
     //   AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV792Histograms(),"V792"));
     
-    if(anaManager->HaveV1290Histograms()) 
-       AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1290Histograms(),"V1290 TDC"));
+    // if(anaManager->HaveV1290Histograms()) 
+       // AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1290Histograms(),"V1290 TDC"));
     
     // if(anaManager->HaveL2249Histograms()) 
     //   AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetL2249Histograms(),"L2249"));
@@ -51,19 +51,20 @@ public:
     // if(anaManager->HaveAgilentistograms()) 
     //   AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetAgilentistograms(),"AGILENT"));
     
-    if(anaManager->HaveV1720Histograms()) 
-      AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1720Histograms(),"V1720 Waveforms"));
+    // if(anaManager->HaveV1720Histograms()) 
+      // AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1720Histograms(),"V1720 Waveforms"));
 
-    if(anaManager->HaveV1720Correlations()) 
-      AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1720Correlations(),"Corr"));
+    // if(anaManager->HaveV1720Correlations()) 
+      // AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1720Correlations(),"Corr"));
     
-    if(anaManager->Havemassselect()) 
-        AddSingleCanvas(new TFancyHistogramCanvas(anaManager->Getmassselect(),"MassSelected"));
-    AddSingleCanvas(new TComplicatedExampleCanvas());
+    // if(anaManager->Havemassselect()) 
+        // AddSingleCanvas(new TFancyHistogramCanvas(anaManager->Getmassselect(),"MassSelected"));
+    // AddSingleCanvas(new TComplicatedExampleCanvas());
 
     if(anaManager->Havefreqmon()) 
         AddSingleCanvas(new TFancyHistogramCanvas(anaManager->Getfreqmon(),"FrequencyMeter"));
-    AddSingleCanvas(new TComplicatedExampleCanvas());
+
+    // AddSingleCanvas(new TComplicatedExampleCanvas());
 
 
     // if(anaManager->HaveV1720Ch1()) 
@@ -78,7 +79,7 @@ public:
     // if(anaManager->HaveDT724Histograms()) 
     //   AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetDT724Histograms(),"DT724 Waveforms"));
     
-    SetDisplayName("NeatAna Display");
+    SetDisplayName("Flux Monitor");
   };
 
   virtual ~MyTestLoop() {};

@@ -51,17 +51,6 @@ class Analyzer : public TRootanaEventLoop
 
         int getrawdata = 1;
         std::ofstream outfile;
-#ifdef USE_FREQ
-        TTree *fluxtree;
-
-        struct fluxsig{
-            int lassig;
-            int freqsig;
-        }sfluxsig;
-        
-        TH1D *lashist =  new TH1D("Laser Signal Hist", "Laser Hist", 1000, 00, 3000);
-        TH1D *freqhist =  new TH1D("Freq Signal Hist", "Freq Hist", 1000, 00, 50);
-#endif
 
 #ifdef USE_NEATEVT
         // The tree to fill.
@@ -196,18 +185,9 @@ class Analyzer : public TRootanaEventLoop
             {
                 TString csvfile = Form("outfiles/run_csv%05d.csv", run);
                 outfile.open(csvfile);
-                outfile << "Freq Counts" << "\t" <<  "Laser Signal" << "\n";
             }
 
             // Create a TTree
-
-#ifdef USE_FREQ 
-            fluxtree = new TTree("Flux Monitor Data", "Flux Monitor Data");
-
-            fluxtree->Branch("Laser Signal", &sfluxsig.lassig, "lassig/I");
-            fluxtree->Branch("Freq Signal", &sfluxsig.freqsig, "freqsig/I");
-#endif
-
 #ifdef USE_V1720
             f1720Tree = new TTree("v1720Data", "v1720Data");
 
@@ -337,16 +317,10 @@ class Analyzer : public TRootanaEventLoop
             if(freqdata)
             {
                 double frequency;
-                double counts;
-                double timedata;
                 frequency = freqdata->GetFrequency();
-                counts = freqdata->GetIntCount();
-                timedata = freqdata->GetIntTime();
                 std::cout.precision(10);
-                outfile << counts << "\t";
-                outfile << timedata << "\t";
-                sfluxsig.freqsig = counts;
                 // outfile << std::fixed << frequency << "\t ";
+                outfile << frequency << "\t";
                 // std::cout << freqdata->GetFrequency()<< "\t" << freqdata->GetIntCount() << "\t";
                 // std::cout << freqdata->GetIntTime();
                 // std::cout << std::endl;
@@ -362,7 +336,23 @@ class Analyzer : public TRootanaEventLoop
             if (v1720 && !v1720->IsZLECompressed())
             {
 
-                int numsam, k;
+                double sadc, smaxadc = 0;
+                int k, smaxpos = 0;
+                int doubleeventflag = 0;
+                int outofwindoweventflag = 1;
+                int windowmin = 500 , windowmax = 1500;
+
+                psevent.timetag = v1720->GetTriggerTag();
+                TV1720RawChannel channelDatasum = v1720->GetChannelData(4);
+                int numsam = channelDatasum.GetNSamples();
+                for (k = 0; k < numsam ; k++) {
+                    sadc = channelDatasum.GetADCSample(k);
+                    psevent.ch4data[k] =  sadc;
+                    if (sadc > smaxadc) {
+                        smaxadc = sadc;
+                        smaxpos = k;
+                    }
+                }
 
                 TV1720RawChannel channel0data = v1720->GetChannelData(0);
                 numsam = channel0data.GetNSamples();
@@ -371,11 +361,134 @@ class Analyzer : public TRootanaEventLoop
                     adc0 =  adc0 + channel0data.GetADCSample(k);
                 if(numsam != 0)
                 adc0 = adc0/numsam;
-                sfluxsig.lassig = adc0;
                 outfile <<adc0<< "\n ";
+
+
+                if(windowmin < smaxpos && smaxpos < windowmax)
+                {
+                    outofwindoweventflag = 0;
+                    double smaxfac = smaxadc/2.5;
+                    for (k = windowmin; k < smaxpos-70; k++)
+                    {
+                        sadc = channelDatasum.GetADCSample(k);
+                        if (sadc > smaxfac ) doubleeventflag = 1;
+                    }
+
+                    for (k = smaxpos+70; k < windowmax; k++)
+                    {
+                        sadc = channelDatasum.GetADCSample(k);
+                        if (sadc > smaxfac ) doubleeventflag = 1;
+                    }
+                }
+
+                //        if (doubleeventflag || outofwindoweventflag) return;
+                //          printf("doubleeventflag= %d\n",doubleeventflag);
+                int channelmask = v1720->GetChannelMask();
+                double maxch[4] = {0};
+
+                std::bitset<8> chmaskbit(channelmask);   // Getting channelmask as an array
+                for (i = 0; i < 8; i++)
+                {
+                    if (chmaskbit[i] == 1)
+                    {
+                        int chan_no = i;
+                        TV1720RawChannel channelData = v1720->GetChannelData(i);
+                        numsamples = channelData.GetNSamples();
+                        if(numsamples <=  0) {maxch[i] = 0; continue;}
+                        if(numsamples >=  4096) {maxch[i] = 0; printf("There is problem\n"); continue;}
+                        double maxadc = 0;
+                        int maxtime = -1;
+                        int maxadcpos = 0;
+
+
+                        /* FIND MAX */
+                        for (int j = smaxpos-50; j < smaxpos+500; j++)
+                        {
+                            double adc = channelData.GetADCSample(j);
+
+                            if (adc > maxadc)
+                            {
+                                maxadc = adc;
+                                maxadcpos = j;
+                                maxtime  = j * 4;
+                            }
+                            if (getrawdata == 570) outfile << psevent.timetag + i * 4 << "    " << adc << "\n";
+                        }
+
+                        if(i == 0)for(j = 0;j<numsamples;j++)psevent.ch0data[j] = channelData.GetADCSample(j);
+                        if(i == 1)for(j = 0;j<numsamples;j++)psevent.ch1data[j] = channelData.GetADCSample(j);
+                        if(i == 2)for(j = 0;j<numsamples;j++)psevent.ch2data[j] = channelData.GetADCSample(j);
+                        if(i == 3)for(j = 0;j<numsamples;j++)psevent.ch3data[j] = channelData.GetADCSample(j);
+
+                        // getting the baseline
+                        double base = 0;
+                        if(smaxpos< 1000)
+                        {
+                            for (int j = maxadcpos+450; j < numsam ; j++)
+                            {
+                                base = base+channelData.GetADCSample(j);
+                            }
+                            base = base/(numsam-maxadcpos-450);
+                            // maxch[i] = maxadc-base;
+                            maxch[i] = maxadc;
+                        }
+
+                        if(smaxpos >= 1000)
+                        {
+                            for (int j = 0; j < maxadcpos-250; j++)
+                            {
+                                base = base+channelData.GetADCSample(j);
+                            }
+                            base = base/(maxadcpos-250);
+                            // maxch[i] = maxadc-base;
+                            maxch[i] = maxadc;
+                        }
+
+                        psevent.maxadc[i] =  maxch[i];
+                        psevent.maxtimetag[i] = maxtime;
+                        psevent.base[i] = base;
+
+                        // Fill Max Histograms
+                        if(i == 0) a->Fill(maxadc - base);
+                        if(i == 1) b->Fill(maxadc - base);
+                        if(i == 2) c->Fill(maxadc - base);
+                        if(i == 3) d->Fill(maxadc - base);
+
+
+                        int plotevent = 100;
+                        if (psevent.midasid == plotevent)
+                        {
+                            TH1D *h  = new TH1D("h", "Normal histogram", numsamples, 0, numsamples - 1);
+                            for (j = 0; j < numsamples; j++) h->SetBinContent (j, channelData.GetADCSample(j));
+                            h->Write("Single Sample Pulse");
+
+                            //     gr = new TGraph(numsamples, &ptime[0], &pulse[0]);
+                        }
+                        // std::cout << pulse.size() << '\n';
+                    }
+                }
+
+                double sum = maxch[0] + maxch[1] + maxch[2] + maxch[3];
+
+                psevent.posx = (maxch[0] + maxch[1])/sum;
+                psevent.posy = (maxch[1] + maxch[2])/sum;
+
+                hsum->Fill(sum);
+                complete->Fill(psevent.posx, psevent.posy);
+                focused->Fill(psevent.posx, psevent.posy);
+
+                if (getrawdata == 1987)
+                {
+                outfile <<smaxpos<< ", "<<adc0<<", ";
+                outfile <<maxch[0]<<", ";
+                outfile <<maxch[1]<<", "<<maxch[2]<<", "<<maxch[3]<<", ";
+                outfile <<psevent.posx<<", "<<psevent.posy << "\n";
+                }
+
+                //f1720Tree->Fill();
             }
 #endif
-fluxtree->Fill();
+
 #ifdef USE_V1290
             TV1290Data *v1290data= dataContainer.GetEventData<TV1290Data>("TDC0");
             if (!v1290data) return 0 ;
@@ -429,8 +542,8 @@ fluxtree->Fill();
 
                     event.tdiff = event.chan1Data - event.chan0Data;
                 }
-                hitcounts->Fill(0);
-                nuofhits->Fill(0);
+                hitcounts->Fill(numhit * 10 + stopchancount);
+                nuofhits->Fill(numhit);
 
                 float temptdiff = 0;
                 if (numhit == 2)
@@ -449,8 +562,8 @@ fluxtree->Fill();
 
                     float tdiff = stopdata - startdata;
                     temptdiff = tdiff;
-                    shits->Fill(0);
-                    alltdiff->Fill(0);
+                    shits->Fill(tdiff);
+                    alltdiff->Fill(tdiff);
                     event.tdiff = tdiff;
                 }
 
@@ -468,14 +581,14 @@ fluxtree->Fill();
                             if (startchancount == 2 && chan != stopchannel)
                             {
                                 float ttdiff = stoptime - meas;
-                                triples2electrs->Fill(0);
-                                alltdiff->Fill(0);
+                                triples2electrs->Fill(ttdiff);
+                                alltdiff->Fill(ttdiff);
                             }
                             if (stopchancount == 2 && chan != startchannel)
                             {
                                 float ttdiff = meas - starttime;
-                                triples2ion->Fill(0);
-                                alltdiff->Fill(0);
+                                triples2ion->Fill(ttdiff);
+                                alltdiff->Fill(ttdiff);
                             }
                         }
 
@@ -487,7 +600,7 @@ fluxtree->Fill();
                         // double meas2 = measurements[2].GetMeasurement() * RES_1290N;
 
                         int tdis = 4 * chan0 + 2 * chan1 + 1 * chan2;
-                        tripdis->Fill(0);
+                        tripdis->Fill(tdis);
 
                     }
 
@@ -499,8 +612,8 @@ fluxtree->Fill();
                         if (chan != stopchannel)
                         {
                             float mtdiff = stoptime - measurements[i].GetMeasurement();
-                            mhits->Fill(0);
-                            alltdiff->Fill(0);
+                            mhits->Fill(mtdiff);
+                            alltdiff->Fill(mtdiff);
                         }
                     }
                 }

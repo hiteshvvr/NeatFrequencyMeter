@@ -25,6 +25,11 @@ public:
 
 private:
 float numpoint = 100;
+float lasmax = 1;
+float freqmax = 1;
+float lasthre = 1234;
+float reflag = 0;
+int tindx = 0;
 // INSERT THESE VALUES
 //float intercept = -5.976;
 //float slope  = 0.0125;

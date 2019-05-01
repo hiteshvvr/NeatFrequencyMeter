@@ -291,7 +291,7 @@ INT begin_of_run(INT run_number, char *error)
     //        v1720_ChannelThresholdSet(myvme, V1720_BASE_ADDR, i, 0x50);
     }*/
 
-    v1720_ChannelDACSet(myvme,V1720_BASE_ADDR,0,0xAA00);
+    /* v1720_ChannelDACSet(myvme,V1720_BASE_ADDR,0,0xAA00); */
     v1720_ChannelDACSet(myvme,V1720_BASE_ADDR,1,0xAA00);
     v1720_ChannelDACSet(myvme,V1720_BASE_ADDR,2,0xAA00);
     v1720_ChannelDACSet(myvme,V1720_BASE_ADDR,3,0xAA00);
@@ -428,13 +428,18 @@ INT poll_event(INT source, INT count, BOOL test)
     /* v1720_SendSoftTrigger(myvme, V1720_BASE_ADDR); */
     //#endif
     /* ss_sleep(ptime);   // This line actually controls the data rate */
-    //    usleep(ptime);
+       /* usleep(1000); */
     int InpDat = v1720_RegisterRead(myvme, V1720_BASE_ADDR, V1720_VME_STATUS);
     InpDat = InpDat & 0x00000001;
     if(InpDat == 1)
         return 1;
+    /* { */
+    /*     int nee =  mvme_read_value(myvme, V1720_BASE_ADDR, 0x812C); */
+    /*     if(nee >= 50) */
+    /*         return 1; */
+    /* } */
     else 
-        return 0;
+    return 0;
 }
 
 
@@ -499,20 +504,12 @@ INT read_trigger_event(char *pevent, INT off)
 
     pd.v2495.elecfreq = abs(elec);
 
-    if(drate<50000)
-    {
         pd.v2495.trigfreq = rate;
-    }
-
-    if(drate<50000)
-    {
         *fdata++ = drate;
-        *fdata++ = ptime;     // TIME SHOULD BE IN MICROSECONDS IF USED IN ROOTANA
-        *fdata++ = rate;
-    }
+        *fdata++ = elec;
 
-    /* printf("Counts:: %d, Time:: %d, Rate:: %d, AvgRate:: %d \n",drate, ptime, rate, flo_rate); */
-    printf("Time:: %d, Event: %d,  Rate:: %d, \n",ptime, drate , rate);
+   /* printf("Counts:: %d, Time:: %d, Rate:: %d, AvgRate:: %d \n",drate, ptime, rate, flo_rate); */
+   /* printf("Time:: %d, Event: %d,  Rate:: %d, \n",ptime, drate , rate); */
 
     int digrate = (drate*tbase/ptime)*4096/maxrate;
     /* int digrate = (flo_rate*tbase/ptime)*4096/maxrate; */
@@ -523,7 +520,7 @@ INT read_trigger_event(char *pevent, INT off)
 #endif
 
 #if defined V1720_CODE
-    v1720_AcqCtl(myvme, V1720_BASE_ADDR, V1720_RUN_STOP);
+ //   v1720_AcqCtl(myvme, V1720_BASE_ADDR, V1720_RUN_STOP);
 
     int dentry = 0;
     int dextra = 0;
@@ -551,7 +548,7 @@ INT read_trigger_event(char *pevent, INT off)
         size_of_evt =  mvme_read_value(myvme, V1720_BASE_ADDR, 0x814C);
         nu_of_evt =  mvme_read_value(myvme, V1720_BASE_ADDR, 0x812C);
 
-        printf("Size of Event : %d Nu of Event: %d \n", size_of_evt, nu_of_evt);
+        /* printf("Size of Event : %d Nu of Event: %d \n", size_of_evt, nu_of_evt); */
         bytes_remaining = size_of_evt * nu_of_evt * 4;     //chaning from 32bit to byte
         int toread = bytes_remaining;
         if (bytes_remaining > 1 )
@@ -599,7 +596,7 @@ INT read_trigger_event(char *pevent, INT off)
     CAENVME_SetOutputRegister((int) myvme->info, cvOut0Bit);
     CAENVME_ClearOutputRegister((int) myvme->info, cvOut0Bit);
 
-    v1720_AcqCtl(myvme, V1720_BASE_ADDR, V1720_RUN_START);
+  //  v1720_AcqCtl(myvme, V1720_BASE_ADDR, V1720_RUN_START);
     return bk_size(pevent);
 }
 
