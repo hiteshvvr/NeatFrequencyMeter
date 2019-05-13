@@ -30,6 +30,14 @@
             </tr>
             <tr>
                 <td style="width: 200px;">
+                    Number of Events:
+                </td>
+                <td>
+                    <div name="modbvalue" data-odb-path="/Logger/Channels/0/Statistics/Events Written"></div>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 200px;">
                     FirmWare REvision:
                 </td>
                 <td>
@@ -59,7 +67,7 @@
                     Trigger Frequency:<br>from FPGA:
                 </td>
                 <td>
-<div name="modbhbar" style="width: 500px; height: 18px;" data-odb-path="/Equipment/Periodic/Display/v2495/TrigFreq" data-max-value="30000" data-color="lightgreen" data-scale="1" data-value="1" ></div>
+                    <div name="modbhbar" style="width: 500px; height: 18px;" data-odb-path="/Equipment/Periodic/Display/v2495/TrigFreq" data-max-value="30000" data-color="lightgreen" data-scale="1" data-value="1"></div>
                 </td>
             </tr>
             <tr>
@@ -72,7 +80,7 @@
                     <div name="modbthermo" style="width:60px;height:150px;float: right;" data-odb-path="/Equipment/Periodic/Display/v2495/TrigFreq" data-min-value="-10" data-max-value="300000" data-color="darkred" data-scale="1" data-value="1"></div>
                 </td>
             </tr>
-            <tr>
+            <!--             <tr>
                 <td colspan="2" style="text-align: center;">
                     <button name="modbbutton" class="mbutton" data-odb-path="/Equipment/Trigger/Settings/v2495/FPGAEarlyWindow" data-odb-value="1">Set FPGA Early to 20ns
                     </button>
@@ -81,9 +89,83 @@
                     </button>
                     </button>
                 </td>
-            </tr>
+            </tr> -->
         </table>
-        <!-- 
+        <script type="text/javascript">
+        function mypause() {
+            mjsonrpc_call("cm_transition", { "transition": "TR_PAUSE" }).then(function(rpc) {
+                //mjsonrpc_debug_alert(rpc);
+                if (rpc.result.status !== 1) {
+                    throw new Error("Cannot pause run, cm_transition() status " + rpc.result.status + ", see MIDAS messages");
+                }
+                // mhttpd_goto_page("Transition"); // DOES NOT RETURN
+            }).catch(function(error) {
+                mjsonrpc_error_alert(error);
+            });
+        }
+        </script>
+        <script type="text/javascript">
+        function myresume() {
+            mjsonrpc_call("cm_transition", { "transition": "TR_RESUME" }).then(function(rpc) {
+                //mjsonrpc_debug_alert(rpc);
+                if (rpc.result.status !== 1) {
+                    throw new Error("Cannot resume run, cm_transition() status " + rpc.result.status + ", see MIDAS messages");
+                }
+                // mhttpd_goto_page("Transition"); // DOES NOT RETURN
+            }).catch(function(error) {
+                mjsonrpc_error_alert(error);
+            });
+        }
+        </script>
+        <!-- Button Style -->
+        <style>
+            .pausebtn{
+              background-color: #c49102;
+              color: white;
+              padding: 16px;
+              font-size: 16px;
+              border: none;
+              cursor: pointer;
+            }
+             .resumebtn{
+              background-color: #0CAF50;
+              color: white;
+              padding: 16px;
+              font-size: 16px;
+              border: none;
+              cursor: pointer;
+            }
+            
+            .dropbtn:hover, .dropbtn:focus, .dropbtn:onclick {
+              background-color: #3e8e41;
+            }
+            .show {display:block;}
+            </style>
+        <div align="center">
+            <button id="pausebn" class="pausebtn">Pause</button>
+            <button id="resumebn" class="resumebtn">Resume</button>
+        </div>
+        <div align="right">
+        </div>
+        <script type="text/javascript">
+        document.getElementById("pausebn").onclick = function() { mypause() };
+        document.getElementById("resumebn").onclick = function() { myresume() };
+        </script>
+        <!-- Settings for TDC   -->
+        <!--         <table class="mtable" width="800">
+            <tr>
+                <th colspan="2" class="mtableheader">Start/Stop</th>
+            </tr>
+            <tr>
+                <th>
+                    <input class="mbutton" id="pauseButton" type=button value=Pause onClick="mypause();">
+                </th>
+                <th>
+                    <input class="mbutton" id="resumeButton" type=button value=Resume onClick="myresume();">
+                </th>
+            </tr>
+        </table> -->
+        <!-- Just kept for the backup for future quick reference -->
         <!-- Settings for TDC  
             <table class="mtable" width="800">
             <tr>
@@ -100,7 +182,7 @@
             <tr>
                 <td>
                     <font color="darkyellow">OFFSet(ns)</font>
-                    <!-- FPGA Early Time: 
+                    FPGA Early Time: 
                 </td>
                 <td>
                     <div name="modbvalue" data-odb-path="/Equipment/Trigger/Settings/v1290/TDCOffset" data-odb-editable="1"></div>
@@ -109,14 +191,15 @@
             <tr>
                 <td>
                     <font color="darkyellow">Width(ns)</font>
-                    <!-- FPGA Early Time: 
+                    FPGA Early Time: 
                 </td>
                 <td>
                     <div name="modbvalue" data-odb-path="/Equipment/Trigger/Settings/v1290/TDCWidth" data-odb-editable="1"></div>
                 </td>
             </tr>
             </tr>
-        </table> -->
+        </table>
+ -->
     </div>
 </body>
 

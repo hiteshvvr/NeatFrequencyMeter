@@ -345,6 +345,7 @@ class Analyzer : public TRootanaEventLoop
                 std::cout.precision(10);
                 outfile << counts << "\t";
                 outfile << timedata << "\t";
+                // std::cout << counts << "\t"<< timedata << "\n";
                 sfluxsig.freqsig = counts;
                 // outfile << std::fixed << frequency << "\t ";
                 // std::cout << freqdata->GetFrequency()<< "\t" << freqdata->GetIntCount() << "\t";

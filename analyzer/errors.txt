@@ -1,1 +1,42 @@
-make: Nothing to be done for 'all'.
+g++ -o freqmon.o -g -O2 -Wall -Wuninitialized -DHAVE_LIBZ -I/home/neatdaq/NewDaq/packages/rootana/include -DHAVE_ROOT -pthread -std=c++11 -m64 -I/opt/root/include -DHAVE_ROOT_XML -DHAVE_ROOT_HTTP -DHAVE_THTTP_SERVER -DHAVE_MIDAS -DOS_LINUX -Dextname -I/home/neatdaq/NewDaq/packages/midas/include -c freqmon.cxx
+freqmon.cxx: In member function ‘virtual void freqmon::UpdateHistograms(TDataContainer&)’:
+freqmon.cxx:57:16: warning: unused variable ‘sadc’ [-Wunused-variable]
+         double sadc, smaxadc = 0;
+                ^
+freqmon.cxx:57:22: warning: unused variable ‘smaxadc’ [-Wunused-variable]
+         double sadc, smaxadc = 0;
+                      ^
+freqmon.cxx:101:13: warning: unused variable ‘counts’ [-Wunused-variable]
+         int counts = freqdata->GetIntCount();
+             ^
+freqmon.cxx:102:13: warning: unused variable ‘timed’ [-Wunused-variable]
+         int timed = freqdata->GetIntTime();
+             ^
+g++ -o ana.exe -g -O2 -Wall -Wuninitialized -DHAVE_LIBZ -I/home/neatdaq/NewDaq/packages/rootana/include -DHAVE_ROOT -pthread -std=c++11 -m64 -I/opt/root/include -DHAVE_ROOT_XML -DHAVE_ROOT_HTTP -DHAVE_THTTP_SERVER -DHAVE_MIDAS -DOS_LINUX -Dextname -I/home/neatdaq/NewDaq/packages/midas/include ana.cxx TV1720Waveform.o TV1720Correlations.o massselect.o freqmon.o TV1290Histogram.o TIMEStamp.o freqmeter.o TAnaManager.o -L/home/neatdaq/NewDaq/packages/rootana/lib -lrootana /home/neatdaq/NewDaq/packages/midas/linux/lib/libmidas.a -lutil -lrt -L/opt/root/lib -lGui -lCore -lImt -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lROOTDataFrame -lROOTVecOps -lTree -lTreePlayer -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lMultiProc -pthread -lm -ldl -rdynamic -lThread -lXMLParser -lRHTTP -lm -lz -lpthread -lssl -lutil
+g++ -o anaDisplay.exe -g -O2 -Wall -Wuninitialized -DHAVE_LIBZ -I/home/neatdaq/NewDaq/packages/rootana/include -DHAVE_ROOT -pthread -std=c++11 -m64 -I/opt/root/include -DHAVE_ROOT_XML -DHAVE_ROOT_HTTP -DHAVE_THTTP_SERVER -DHAVE_MIDAS -DOS_LINUX -Dextname -I/home/neatdaq/NewDaq/packages/midas/include anaDisplay.cxx TV1720Waveform.o TV1720Correlations.o massselect.o freqmon.o TV1290Histogram.o TIMEStamp.o freqmeter.o TAnaManager.o -L/home/neatdaq/NewDaq/packages/rootana/lib -lrootana /home/neatdaq/NewDaq/packages/midas/linux/lib/libmidas.a -lutil -lrt -L/opt/root/lib -lGui -lCore -lImt -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lROOTDataFrame -lROOTVecOps -lTree -lTreePlayer -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lMultiProc -pthread -lm -ldl -rdynamic -lThread -lXMLParser -lRHTTP -lm -lz -lpthread -lssl -lutil
+g++ -o midas2root.exe -g -O2 -Wall -Wuninitialized -DHAVE_LIBZ -I/home/neatdaq/NewDaq/packages/rootana/include -DHAVE_ROOT -pthread -std=c++11 -m64 -I/opt/root/include -DHAVE_ROOT_XML -DHAVE_ROOT_HTTP -DHAVE_THTTP_SERVER -DHAVE_MIDAS -DOS_LINUX -Dextname -I/home/neatdaq/NewDaq/packages/midas/include midas2root.cxx TV1720Waveform.o TV1720Correlations.o massselect.o freqmon.o TV1290Histogram.o TIMEStamp.o freqmeter.o TAnaManager.o -L/home/neatdaq/NewDaq/packages/rootana/lib -lrootana /home/neatdaq/NewDaq/packages/midas/linux/lib/libmidas.a -lutil -lrt -L/opt/root/lib -lGui -lCore -lImt -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lROOTDataFrame -lROOTVecOps -lTree -lTreePlayer -lRint -lPostscript -lMatrix -lPhysics -lMathCore -lThread -lMultiProc -pthread -lm -ldl -rdynamic -lThread -lXMLParser -lRHTTP -lm -lz -lpthread -lssl -lutil
+midas2root.cxx: In member function ‘virtual bool Analyzer::ProcessMidasEvent(TDataContainer&)’:
+midas2root.cxx:339:24: warning: variable ‘frequency’ set but not used [-Wunused-but-set-variable]
+                 double frequency;
+                        ^
+midas2root.cxx:471:39: warning: unused variable ‘ttdiff’ [-Wunused-variable]
+                                 float ttdiff = stoptime - meas;
+                                       ^
+midas2root.cxx:477:39: warning: unused variable ‘ttdiff’ [-Wunused-variable]
+                                 float ttdiff = meas - starttime;
+                                       ^
+midas2root.cxx:490:29: warning: unused variable ‘tdis’ [-Wunused-variable]
+                         int tdis = 4 * chan0 + 2 * chan1 + 1 * chan2;
+                             ^
+midas2root.cxx:502:35: warning: unused variable ‘mtdiff’ [-Wunused-variable]
+                             float mtdiff = stoptime - measurements[i].GetMeasurement();
+                                   ^
+midas2root.cxx:436:23: warning: variable ‘temptdiff’ set but not used [-Wunused-but-set-variable]
+                 float temptdiff = 0;
+                       ^
+midas2root.cxx:328:20: warning: unused variable ‘numsamples’ [-Wunused-variable]
+             int i, numsamples, j;
+                    ^
+midas2root.cxx:328:32: warning: unused variable ‘j’ [-Wunused-variable]
+             int i, numsamples, j;
+                                ^

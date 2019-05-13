@@ -505,6 +505,7 @@ INT read_trigger_event(char *pevent, INT off)
     pd.v2495.elecfreq = abs(elec);
 
         pd.v2495.trigfreq = rate;
+        /* printf("%d\t%d\n", drate, elec); */
         *fdata++ = drate;
         *fdata++ = elec;
 

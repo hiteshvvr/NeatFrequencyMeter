@@ -96,14 +96,25 @@ void freqmon::UpdateHistograms(TDataContainer &dataContainer) {
     if(freqdata)
     {
         double frequency;
+        double cfreq = 0 ;
         frequency = freqdata->GetFrequency();
+        int counts = freqdata->GetIntCount();
+        int timed = freqdata->GetIntTime();
         GetHistogram(1)->SetBinContent(midasid ,frequency);
 
-        if(frequency > freqmax)
-            freqmax = frequency;
-        frequency = frequency/freqmax;
+        // if(frequency<50000)
+        // {
+            // for(int r = 0;r<49;r++) afreq[r] = afreq[r+1];
+            // afreq[49] = frequency;
+            //
+            // for(int r = 0;r<50;r++) cfreq = cfreq + afreq[r];
+            //
+            // cfreq = cfreq/50;
 
-        GetHistogram(3)->SetBinContent(midasid ,frequency);
+                // std::cout << "Frequency:::" << "\t" << cfreq << "\n";
+                // std::cout << "Inst Frequency:::" << "\t" << frequency<< "\n";
+
+        // }
     }
 
 }
